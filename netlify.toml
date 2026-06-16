@@ -1,0 +1,19 @@
+# Netlify configuration for the PRIMERA Next.js site.
+# Netlify auto-detects Next.js and runs the official Next.js Runtime
+# (@netlify/plugin-nextjs), which handles App Router, SSG, SSR and image
+# optimization. This file just pins the build settings explicitly.
+
+[build]
+  command = "npm run build"
+  # The Next.js Runtime reads the .next output; do NOT set this to "out"
+  # unless you switch to a full static export (output: "export").
+  publish = ".next"
+
+[build.environment]
+  # Next.js 14.2 requires Node >= 18.17. Pin an LTS the Netlify image supports.
+  NODE_VERSION = "20"
+
+# Official Next.js Runtime. Netlify installs this automatically, but
+# declaring it makes the build reproducible and explicit.
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
