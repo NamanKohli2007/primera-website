@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Reveal from "@/components/Reveal";
+import PriceTag from "@/components/PriceTag";
 
 /**
  * ProductCard — the shared product tile (homepage Collection, /shop, /motion).
@@ -53,23 +54,14 @@ export default function ProductCard({ product, index = 0, surface = "light" }) {
           </div>
         </div>
 
-        {/* Name + price */}
-        <div className="flex items-baseline justify-between gap-3">
-          <h3
-            className={`font-sans text-sm font-medium tracking-wide ${
-              surfaceDark ? "text-cream" : "text-charcoal"
-            }`}
-          >
-            {product.name}
-          </h3>
-          <span
-            className={`font-sans text-sm ${
-              surfaceDark ? "text-cream/55" : "text-charcoal/60"
-            }`}
-          >
-            {product.price}
-          </span>
-        </div>
+        {/* Name */}
+        <h3
+          className={`font-sans text-sm font-medium tracking-wide ${
+            surfaceDark ? "text-cream" : "text-charcoal"
+          }`}
+        >
+          {product.name}
+        </h3>
 
         {/* Optional descriptor (Motion pieces) */}
         {product.cardNote && (
@@ -81,6 +73,16 @@ export default function ProductCard({ product, index = 0, surface = "light" }) {
             {product.cardNote}
           </p>
         )}
+
+        {/* Price */}
+        <div className="mt-2">
+          <PriceTag
+            original={product.original}
+            current={product.price}
+            dark={surfaceDark}
+            size="sm"
+          />
+        </div>
 
         {/* Colour swatches — 14px circles, decorative */}
         <div className="mt-3 flex items-center gap-1.5">

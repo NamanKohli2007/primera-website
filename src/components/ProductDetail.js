@@ -2,7 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
+import { useCart } from "@/context/CartContext";
+import PriceTag from "@/components/PriceTag";
 
 const fade = {
   hidden: { opacity: 0, y: 22 },
@@ -23,18 +26,22 @@ function DetailSection({ title, children }) {
 }
 
 export default function ProductDetail({ product }) {
+  const { addItem, openCart } = useCart();
   const [colorIndex, setColorIndex] = useState(0);
   const [size, setSize] = useState(null);
-  const [added, setAdded] = useState(false);
+  const [needSize, setNeedSize] = useState(false);
 
   const backHref = product.category === "motion" ? "/motion" : "/shop";
   const backLabel = product.category === "motion" ? "Motion" : "Essentials";
   const selectedColor = product.colors[colorIndex];
 
   const handleAdd = () => {
-    setAdded(true);
-    window.clearTimeout(handleAdd._t);
-    handleAdd._t = window.setTimeout(() => setAdded(false), 1800);
+    if (!size) {
+      setNeedSize(true);
+      return;
+    }
+    addItem(product, { color: selectedColor.name, size, quantity: 1 });
+    openCart();
   };
 
   return (
@@ -71,13 +78,14 @@ export default function ProductDetail({ product }) {
               {product.tag}
             </div>
             <div className="absolute inset-0 z-10 flex items-center justify-center">
-              <span
-                className={`wordmark text-xl ${
-                  product.cardDark ? "text-cream/15" : "text-charcoal/20"
-                }`}
-              >
-                PRIMERA
-              </span>
+              <Image
+                src="/Primera-bgremoved.png"
+                alt=""
+                aria-hidden="true"
+                width={120}
+                height={120}
+                className="h-auto w-[120px] opacity-[0.08]"
+              />
             </div>
           </div>
         </motion.div>
@@ -93,7 +101,13 @@ export default function ProductDetail({ product }) {
               {product.summary}
             </p>
           )}
-          <p className="mt-5 font-sans text-lg text-charcoal">{product.price}</p>
+          <div className="mt-5">
+            <PriceTag
+              original={product.original}
+              current={product.price}
+              size="lg"
+            />
+          </div>
 
           {/* Colour selector */}
           <div className="mt-9">
@@ -136,9 +150,16 @@ export default function ProductDetail({ product }) {
 
           {/* Size selector */}
           <div className="mt-8">
-            <span className="font-sans text-[11px] uppercase tracking-[0.22em] text-charcoal/50">
-              Size
-            </span>
+            <div className="flex items-baseline justify-between">
+              <span className="font-sans text-[11px] uppercase tracking-[0.22em] text-charcoal/50">
+                Size
+              </span>
+              {needSize && (
+                <span className="font-sans text-[12px] text-charcoal/70">
+                  Please select a size
+                </span>
+              )}
+            </div>
             <div className="mt-4 flex flex-wrap gap-2.5">
               {product.sizes.map((s) => {
                 const isSel = s === size;
@@ -146,7 +167,10 @@ export default function ProductDetail({ product }) {
                   <button
                     key={s}
                     type="button"
-                    onClick={() => setSize(s)}
+                    onClick={() => {
+                      setSize(s);
+                      setNeedSize(false);
+                    }}
                     className={`h-11 min-w-[3rem] rounded-sm border px-4 font-sans text-[13px] tracking-wide transition-all duration-300 ${
                       isSel
                         ? "border-ink bg-ink text-cream"
@@ -166,10 +190,10 @@ export default function ProductDetail({ product }) {
             onClick={handleAdd}
             className="btn-solid mt-9 w-full bg-ink text-cream hover:bg-charcoal"
           >
-            {added ? "Added to Bag ✓" : "Add to Cart"}
+            Add to Cart
           </button>
           <p className="mt-4 font-sans text-[12px] text-charcoal/45">
-            Free shipping over $150 · 30-day returns
+            Free delivery over ₹4999 · 30-day returns
           </p>
 
           {/* Why You'll Reach For It */}

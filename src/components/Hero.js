@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import FabricCanvas from "@/components/FabricCanvas";
 
@@ -44,6 +45,22 @@ export default function Hero() {
       {/* Animated flowing fabric */}
       <FabricCanvas />
 
+      {/* Still logo watermark — a faint ghost of the mark, sitting between
+          the flowing canvas (back) and the text content (front). White
+          silhouette reads best against the dark hero; it never animates. */}
+      <div className="pointer-events-none absolute inset-0 z-[5] flex items-center justify-center">
+        <Image
+          src="/Primera-bgremoved.png"
+          alt=""
+          aria-hidden="true"
+          width={500}
+          height={500}
+          priority
+          className="h-auto w-[200px] select-none opacity-[0.07] md:w-[460px]"
+          style={{ filter: "brightness(0) invert(1)" }}
+        />
+      </div>
+
       {/* Depth vignette for legibility */}
       <div className="pointer-events-none absolute inset-0 z-10 bg-[radial-gradient(ellipse_at_center,_transparent_30%,_rgba(10,10,8,0.55)_100%)]" />
       <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-b from-ink/40 via-transparent to-ink/70" />
@@ -59,7 +76,7 @@ export default function Hero() {
           variants={item}
           className="mb-8 font-sans text-[11px] uppercase tracking-[0.4em] text-cream/50"
         >
-          Plant-Based Essentials
+          Premium Everyday Essentials
         </motion.span>
 
         <motion.h1
@@ -91,7 +108,7 @@ export default function Hero() {
             href="/shop"
             className="btn-solid bg-cream text-ink hover:bg-cream/85"
           >
-            Shop Primera
+            Shop Essentials
           </Link>
           <Link
             href="/motion"

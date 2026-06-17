@@ -1,23 +1,68 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useState } from "react";
+import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 
 const LINKS = [
-  { label: "Shop", href: "/shop" },
+  { label: "Essentials", href: "/shop" },
   { label: "Motion", href: "/motion" },
   { label: "Story", href: "/story" },
   { label: "Fabrics", href: "/#fabrics" },
+  { label: "FAQ", href: "/faq" },
 ];
+
+function BagIcon() {
+  return (
+    <svg
+      width="21"
+      height="21"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.4"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M6 2 3 6v14a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V6l-3-4Z" />
+      <path d="M3 6h18" />
+      <path d="M16 10a4 4 0 0 1-8 0" />
+    </svg>
+  );
+}
+
+function PersonIcon() {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.4"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 21a8 8 0 0 1 16 0" />
+    </svg>
+  );
+}
 
 /**
  * Navigation
  * variant="overlay" — transparent over a dark hero, turns solid on scroll
  *                     (homepage, Motion page).
  * variant="solid"   — always solid, for light-background pages where a
- *                     transparent bar would be invisible (Shop, Story).
+ *                     transparent bar would be invisible (Shop, Story, etc).
  */
 export default function Navigation({ variant = "overlay" }) {
+  const { count, openCart, hydrated } = useCart();
+  const { user, hydrated: authHydrated } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -30,10 +75,11 @@ export default function Navigation({ variant = "overlay" }) {
   }, [variant]);
 
   const solid = variant === "solid" || scrolled || open;
+  const showBadge = hydrated && count > 0;
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ease-luxe ${
+      className={`fixed inset-x-0 top-9 z-50 transition-all duration-500 ease-luxe ${
         solid
           ? "border-b border-stone/60 bg-cream/85 backdrop-blur-md"
           : "border-b border-transparent bg-transparent"
@@ -43,10 +89,18 @@ export default function Navigation({ variant = "overlay" }) {
         {/* Logo — left */}
         <Link
           href="/"
-          className={`wordmark text-xl md:text-2xl transition-colors duration-500 ${
+          className={`flex items-center gap-2.5 wordmark text-xl md:text-2xl transition-colors duration-500 ${
             solid ? "text-charcoal" : "text-cream"
           }`}
         >
+          <Image
+            src="/Primera-bgremoved.png"
+            alt=""
+            width={32}
+            height={32}
+            priority
+            className="h-8 w-8 shrink-0 object-contain"
+          />
           PRIMERA
         </Link>
 
@@ -71,16 +125,52 @@ export default function Navigation({ variant = "overlay" }) {
           ))}
         </ul>
 
-        {/* Cart — right */}
-        <div className="flex items-center gap-4">
-          <Link
-            href="/shop"
-            className={`hidden font-sans text-[12px] uppercase tracking-wide2 transition-colors duration-500 md:inline ${
-              solid ? "text-charcoal/80 hover:text-charcoal" : "text-cream/80 hover:text-cream"
+        {/* Account + bag + mobile toggle — right */}
+        <div className="flex items-center gap-5">
+          {authHydrated &&
+            (user ? (
+              <Link
+                href="/account"
+                aria-label="My account"
+                className={`hidden items-center gap-1.5 font-sans text-[12px] uppercase tracking-wide2 transition-colors duration-500 md:inline-flex ${
+                  solid ? "text-charcoal/80 hover:text-charcoal" : "text-cream/85 hover:text-cream"
+                }`}
+              >
+                <PersonIcon />
+                <span className="max-w-[7rem] truncate">
+                  {user.firstName || "Account"}
+                </span>
+              </Link>
+            ) : (
+              <Link
+                href="/login"
+                className={`hidden font-sans text-[12px] uppercase tracking-wide2 transition-colors duration-500 md:inline ${
+                  solid ? "text-charcoal/80 hover:text-charcoal" : "text-cream/85 hover:text-cream"
+                }`}
+              >
+                Sign In
+              </Link>
+            ))}
+
+          <button
+            type="button"
+            onClick={openCart}
+            aria-label={showBadge ? `Open bag, ${count} item${count > 1 ? "s" : ""}` : "Open bag"}
+            className={`relative transition-colors duration-500 ${
+              solid ? "text-charcoal/80 hover:text-charcoal" : "text-cream/85 hover:text-cream"
             }`}
           >
-            Cart&nbsp;(0)
-          </Link>
+            <BagIcon />
+            {showBadge && (
+              <span
+                className={`absolute -right-2 -top-2 flex h-[17px] min-w-[17px] items-center justify-center rounded-full px-1 font-sans text-[10px] font-medium leading-none ${
+                  solid ? "bg-charcoal text-cream" : "bg-cream text-ink"
+                }`}
+              >
+                {count}
+              </span>
+            )}
+          </button>
 
           {/* Mobile menu toggle */}
           <button
@@ -115,7 +205,7 @@ export default function Navigation({ variant = "overlay" }) {
         }`}
       >
         <ul className="flex flex-col gap-1 px-6 py-4">
-          {[...LINKS, { label: "Cart (0)", href: "/shop" }].map((link) => (
+          {LINKS.map((link) => (
             <li key={link.label}>
               <Link
                 href={link.href}
@@ -126,6 +216,17 @@ export default function Navigation({ variant = "overlay" }) {
               </Link>
             </li>
           ))}
+          {authHydrated && (
+            <li>
+              <Link
+                href={user ? "/account" : "/login"}
+                onClick={() => setOpen(false)}
+                className="block py-3 font-sans text-sm uppercase tracking-wide2 text-charcoal/80"
+              >
+                {user ? "My Account" : "Sign In"}
+              </Link>
+            </li>
+          )}
         </ul>
       </div>
     </header>

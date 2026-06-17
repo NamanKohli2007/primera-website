@@ -1,15 +1,16 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 
 const COLUMNS = [
   {
     title: "Shop",
     links: [
-      { label: "Primera Tee", href: "/shop" },
-      { label: "The Henley", href: "/shop" },
-      { label: "Primera Shorts", href: "/shop" },
-      { label: "The Trousers", href: "/shop" },
+      { label: "The Primera Tee", href: "/shop/primera-tee" },
+      { label: "The Primera Henley", href: "/shop/henley" },
+      { label: "The Primera Trousers", href: "/shop/trousers" },
+      { label: "Motion", href: "/motion" },
     ],
   },
   {
@@ -30,16 +31,35 @@ const COLUMNS = [
       { label: "Stockists", href: "#" },
     ],
   },
+  {
+    title: "Help",
+    links: [
+      { label: "FAQ", href: "/faq" },
+      { label: "Shipping", href: "#" },
+      { label: "Returns", href: "#" },
+      { label: "Size Guide", href: "#" },
+    ],
+  },
 ];
 
 export default function Footer() {
   return (
     <footer className="border-t border-stone/70 bg-cream">
       <div className="mx-auto max-w-7xl px-6 py-16 md:px-10 md:py-20">
-        <div className="grid grid-cols-1 gap-12 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
+        <div className="grid grid-cols-2 gap-x-8 gap-y-12 md:grid-cols-[1.4fr_repeat(4,1fr)]">
           {/* Logo + line */}
-          <div>
-            <Link href="/" className="wordmark text-2xl text-charcoal">
+          <div className="col-span-2 md:col-span-1">
+            <Link
+              href="/"
+              className="flex items-center gap-2.5 wordmark text-2xl text-charcoal"
+            >
+              <Image
+                src="/Primera-bgremoved.png"
+                alt=""
+                width={32}
+                height={32}
+                className="h-8 w-8 shrink-0 object-contain"
+              />
               PRIMERA
             </Link>
             <p className="mt-4 max-w-xs font-serif text-lg italic text-charcoal/55">

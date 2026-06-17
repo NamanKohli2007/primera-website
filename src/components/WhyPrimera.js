@@ -6,7 +6,7 @@ const REASONS = [
   {
     n: "01",
     title: "Premium Plant-Based Fibres",
-    body: "Bamboo and modal, spun into fabrics that fall softer, breathe better, and only improve with every wear and wash.",
+    body: "Premium plant-based fabrics — soft, drapey Modal and breathable, lightweight Bamboo — spun to fall softer, breathe better, and only improve with every wear and wash.",
   },
   {
     n: "02",

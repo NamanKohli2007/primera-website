@@ -40,7 +40,7 @@ export default function FinalCTA() {
             href="/shop"
             className="btn-solid bg-cream text-ink hover:bg-cream/85"
           >
-            Shop Primera
+            Shop Essentials
           </Link>
           <Link
             href="/motion"

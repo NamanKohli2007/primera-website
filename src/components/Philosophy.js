@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Reveal from "@/components/Reveal";
 
 export default function Philosophy() {
@@ -30,6 +31,16 @@ export default function Philosophy() {
           className="font-serif text-xl italic text-charcoal/70 md:text-2xl"
         >
           Made To Be Missed.
+        </Reveal>
+
+        <Reveal delay={0.28} className="mt-10 flex justify-center">
+          <Image
+            src="/Primera-bgremoved.png"
+            alt="PRIMERA"
+            width={60}
+            height={60}
+            className="h-[60px] w-[60px]"
+          />
         </Reveal>
       </div>
     </section>

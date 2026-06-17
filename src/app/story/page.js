@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import Reveal from "@/components/Reveal";
@@ -49,6 +50,16 @@ export default function StoryPage() {
       <main className="bg-cream">
         {/* Hero */}
         <section className="px-6 pb-14 pt-36 text-center md:pb-20 md:pt-52">
+          <Reveal className="mb-8 flex justify-center">
+            <Image
+              src="/Primera-bgremoved.png"
+              alt="PRIMERA"
+              width={80}
+              height={80}
+              priority
+              className="h-20 w-20"
+            />
+          </Reveal>
           <Reveal as="p" className="eyebrow mb-6">
             The PRIMERA Story
           </Reveal>
