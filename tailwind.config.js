@@ -13,6 +13,7 @@ module.exports = {
         ivory: "#F5F2EE", // off-white
         charcoal: "#2a2926", // deep charcoal
         ink: "#1a1a18", // soft black
+        gold: "#C9A84C", // bright gold accent
       },
       fontFamily: {
         serif: ["var(--font-cormorant)", "Cormorant Garamond", "serif"],

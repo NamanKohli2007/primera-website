@@ -73,7 +73,7 @@ export default function StoryPage() {
           <Reveal
             as="div"
             delay={0.12}
-            className="mx-auto mt-10 h-px w-16 bg-charcoal/20"
+            className="mx-auto mt-10 h-px w-16 bg-gold/40"
           />
         </section>
 
@@ -89,12 +89,12 @@ export default function StoryPage() {
 
           {/* Pull quote */}
           <Reveal as="figure" amount={0.5} className="my-16 text-center md:my-24">
-            <div className="mx-auto mb-9 h-px w-12 bg-charcoal/25" />
+            <div className="mx-auto mb-9 h-px w-12 bg-gold/40" />
             <blockquote className="font-serif text-3xl italic leading-[1.3] text-ink md:text-[2.6rem] md:leading-[1.25]">
               &ldquo;I couldn&rsquo;t find clothing that felt the way I wanted it
               to feel.&rdquo;
             </blockquote>
-            <div className="mx-auto mt-9 h-px w-12 bg-charcoal/25" />
+            <div className="mx-auto mt-9 h-px w-12 bg-gold/40" />
           </Reveal>
 
           <div className="space-y-7 md:space-y-8">
@@ -124,8 +124,8 @@ export default function StoryPage() {
 
           {/* Closing statement */}
           <Reveal as="div" amount={0.5} className="mt-20 text-center md:mt-28">
-            <div className="mx-auto mb-10 h-px w-16 bg-charcoal/20" />
-            <p className="font-serif text-5xl font-light leading-none text-ink md:text-7xl">
+            <div className="mx-auto mb-10 h-px w-16 bg-gold/40" />
+            <p className="font-serif text-5xl font-light leading-none text-gold md:text-7xl">
               Made To Be Missed.
             </p>
           </Reveal>

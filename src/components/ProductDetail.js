@@ -131,7 +131,7 @@ export default function ProductDetail({ product }) {
                     onClick={() => setColorIndex(i)}
                     className={`flex h-8 w-8 items-center justify-center rounded-full transition-all duration-300 ${
                       isSel
-                        ? "ring-1 ring-charcoal ring-offset-2 ring-offset-cream"
+                        ? "ring-1 ring-gold ring-offset-2 ring-offset-cream"
                         : "ring-1 ring-transparent hover:ring-stone"
                     }`}
                   >
@@ -173,7 +173,7 @@ export default function ProductDetail({ product }) {
                     }}
                     className={`h-11 min-w-[3rem] rounded-sm border px-4 font-sans text-[13px] tracking-wide transition-all duration-300 ${
                       isSel
-                        ? "border-ink bg-ink text-cream"
+                        ? "border-gold text-gold"
                         : "border-stone text-charcoal hover:border-charcoal"
                     }`}
                   >
@@ -188,7 +188,7 @@ export default function ProductDetail({ product }) {
           <button
             type="button"
             onClick={handleAdd}
-            className="btn-solid mt-9 w-full bg-ink text-cream hover:bg-charcoal"
+            className="btn-solid mt-9 w-full border border-gold bg-ink text-cream hover:bg-charcoal"
           >
             Add to Cart
           </button>

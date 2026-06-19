@@ -111,15 +111,11 @@ export default function Navigation({ variant = "overlay" }) {
               <Link
                 href={link.href}
                 className={`group relative font-sans text-[12px] uppercase tracking-wide2 transition-colors duration-500 ${
-                  solid ? "text-charcoal/80 hover:text-charcoal" : "text-cream/80 hover:text-cream"
+                  solid ? "text-charcoal/80 hover:text-gold" : "text-cream/80 hover:text-gold"
                 }`}
               >
                 {link.label}
-                <span
-                  className={`absolute -bottom-1.5 left-0 h-px w-0 transition-all duration-500 ease-luxe group-hover:w-full ${
-                    solid ? "bg-charcoal" : "bg-cream"
-                  }`}
-                />
+                <span className="absolute -bottom-1.5 left-0 h-px w-0 bg-gold transition-all duration-500 ease-luxe group-hover:w-full" />
               </Link>
             </li>
           ))}

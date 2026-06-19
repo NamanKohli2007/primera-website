@@ -9,8 +9,16 @@ import {
   useMemo,
 } from "react";
 
+import {
+  COUPONS,
+  validateCoupon,
+  couponDiscount as calcCouponDiscount,
+  hasUsedFirstOrder,
+} from "@/lib/coupons";
+
 const CartContext = createContext(null);
 const STORAGE_KEY = "primera_cart_v1";
+const COUPON_KEY = "primera_coupon_v1";
 
 /** A cart line is unique per product + colour + size. */
 function makeLineId(slug, color, size) {
@@ -19,10 +27,11 @@ function makeLineId(slug, color, size) {
 
 export function CartProvider({ children }) {
   const [items, setItems] = useState([]);
+  const [coupon, setCoupon] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
 
-  // Load persisted cart once on mount
+  // Load persisted cart + applied coupon once on mount
   useEffect(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
@@ -30,6 +39,10 @@ export function CartProvider({ children }) {
         const parsed = JSON.parse(raw);
         if (Array.isArray(parsed)) setItems(parsed);
       }
+      // Re-resolve the coupon from the catalogue so persisted data can't go
+      // stale (the rate/rules always come from code, not storage).
+      const savedCode = localStorage.getItem(COUPON_KEY);
+      if (savedCode && COUPONS[savedCode]) setCoupon(COUPONS[savedCode]);
     } catch {
       /* ignore corrupt storage */
     }
@@ -45,6 +58,17 @@ export function CartProvider({ children }) {
       /* storage full / unavailable */
     }
   }, [items, hydrated]);
+
+  // Persist the applied coupon (code only) so it carries cart → checkout.
+  useEffect(() => {
+    if (!hydrated) return;
+    try {
+      if (coupon) localStorage.setItem(COUPON_KEY, coupon.code);
+      else localStorage.removeItem(COUPON_KEY);
+    } catch {
+      /* ignore */
+    }
+  }, [coupon, hydrated]);
 
   const addItem = useCallback((product, { color, size, quantity = 1 }) => {
     const id = makeLineId(product.slug, color, size);
@@ -89,7 +113,11 @@ export function CartProvider({ children }) {
     setItems((prev) => prev.filter((i) => i.id !== id));
   }, []);
 
-  const clearCart = useCallback(() => setItems([]), []);
+  // Clearing the cart (e.g. after an order is placed) also drops the coupon.
+  const clearCart = useCallback(() => {
+    setItems([]);
+    setCoupon(null);
+  }, []);
   const openCart = useCallback(() => setIsOpen(true), []);
   const closeCart = useCallback(() => setIsOpen(false), []);
 
@@ -102,11 +130,40 @@ export function CartProvider({ children }) {
     [items]
   );
 
+  // Validate + apply a coupon code against the current subtotal. Callers may
+  // pass `hasOrderedBefore` (device flag OR a signed-in account's order
+  // history); otherwise we fall back to the device-level localStorage flag.
+  // Returns { ok, error?, coupon? } so the UI can show success / error copy.
+  const applyCoupon = useCallback(
+    (rawCode, opts = {}) => {
+      const hasOrderedBefore =
+        opts.hasOrderedBefore != null
+          ? opts.hasOrderedBefore
+          : hasUsedFirstOrder();
+      const res = validateCoupon(rawCode, { subtotal, hasOrderedBefore });
+      if (res.ok) setCoupon(res.coupon);
+      return res;
+    },
+    [subtotal]
+  );
+
+  const removeCoupon = useCallback(() => setCoupon(null), []);
+
+  // Live rupee discount from the applied coupon (0 if none / below minimum).
+  const couponDiscount = useMemo(
+    () => calcCouponDiscount(coupon, subtotal),
+    [coupon, subtotal]
+  );
+
   const value = useMemo(
     () => ({
       items,
       count,
       subtotal,
+      coupon,
+      couponDiscount,
+      applyCoupon,
+      removeCoupon,
       isOpen,
       hydrated,
       addItem,
@@ -120,6 +177,10 @@ export function CartProvider({ children }) {
       items,
       count,
       subtotal,
+      coupon,
+      couponDiscount,
+      applyCoupon,
+      removeCoupon,
       isOpen,
       hydrated,
       addItem,

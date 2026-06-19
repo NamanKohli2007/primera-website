@@ -15,14 +15,14 @@ export default function MotionPage() {
     <>
       <Navigation />
 
-      <main className="bg-charcoal">
+      <main className="bg-[#0C1731]">
         {/* Header */}
         <section className="relative overflow-hidden px-6 pb-12 pt-40 md:px-10 md:pb-16 md:pt-56">
           {/* Soft energetic glow */}
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_-10%,_rgba(245,242,238,0.10),_transparent_55%)]" />
 
           <div className="relative mx-auto max-w-7xl">
-            <Reveal as="p" className="eyebrow mb-5 text-cream/45">
+            <Reveal as="p" className="eyebrow mb-5 text-[#C0DAE7]/70">
               Engineered for Movement
             </Reveal>
             <Reveal
@@ -35,7 +35,7 @@ export default function MotionPage() {
             <Reveal
               as="p"
               delay={0.12}
-              className="mt-6 max-w-xl font-sans text-base font-light leading-relaxed text-cream/55"
+              className="mt-6 max-w-xl font-sans text-base font-light leading-relaxed text-[#C0DAE7]/80"
             >
               Performance essentials built from plant-based technical fabrics.
               Breathable, durable, and quietly relentless — made to move the way

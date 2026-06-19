@@ -1,6 +1,10 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
+import { motion, useInView, animate } from "framer-motion";
 import Reveal from "@/components/Reveal";
+
+const EASE = [0.22, 1, 0.36, 1];
 
 const REASONS = [
   {
@@ -20,6 +24,53 @@ const REASONS = [
   },
 ];
 
+function ReasonColumn({ reason, index }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, amount: 0.4 });
+  const base = index * 0.22; // column stagger: 01, then 02, then 03
+  const target = parseInt(reason.n, 10);
+  const [num, setNum] = useState(0);
+
+  // Count up 00 → final number once the column scrolls into view
+  useEffect(() => {
+    if (!inView) return;
+    const controls = animate(0, target, {
+      duration: 0.6,
+      delay: base,
+      ease: "easeOut",
+      onUpdate: (v) => setNum(Math.round(v)),
+    });
+    return () => controls.stop();
+  }, [inView, target, base]);
+
+  return (
+    <div
+      ref={ref}
+      className="group flex h-full flex-col border-t border-charcoal/15 pt-7"
+    >
+      <span className="font-serif text-5xl font-light tabular-nums text-gold/70 transition-colors duration-500 group-hover:text-gold md:text-6xl">
+        {String(num).padStart(2, "0")}
+      </span>
+      <motion.h3
+        className="mt-6 font-serif text-2xl font-light text-charcoal md:text-[1.7rem]"
+        initial={{ opacity: 0, y: 14 }}
+        animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
+        transition={{ duration: 0.6, delay: base + 0.7, ease: EASE }}
+      >
+        {reason.title}
+      </motion.h3>
+      <motion.p
+        className="mt-4 max-w-xs font-sans text-sm font-light leading-relaxed text-charcoal/60"
+        initial={{ opacity: 0, y: 14 }}
+        animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
+        transition={{ duration: 0.6, delay: base + 0.95, ease: EASE }}
+      >
+        {reason.body}
+      </motion.p>
+    </div>
+  );
+}
+
 export default function WhyPrimera() {
   return (
     <section id="why" className="bg-cream py-24 md:py-32">
@@ -30,19 +81,7 @@ export default function WhyPrimera() {
 
         <div className="grid grid-cols-1 gap-12 md:grid-cols-3 md:gap-10">
           {REASONS.map((reason, i) => (
-            <Reveal key={reason.n} delay={i * 0.12} className="group">
-              <div className="flex h-full flex-col border-t border-charcoal/15 pt-7">
-                <span className="font-serif text-5xl font-light text-charcoal/25 transition-colors duration-500 group-hover:text-charcoal/45 md:text-6xl">
-                  {reason.n}
-                </span>
-                <h3 className="mt-6 font-serif text-2xl font-light text-charcoal md:text-[1.7rem]">
-                  {reason.title}
-                </h3>
-                <p className="mt-4 max-w-xs font-sans text-sm font-light leading-relaxed text-charcoal/60">
-                  {reason.body}
-                </p>
-              </div>
-            </Reveal>
+            <ReasonColumn key={reason.n} reason={reason} index={i} />
           ))}
         </div>
       </div>

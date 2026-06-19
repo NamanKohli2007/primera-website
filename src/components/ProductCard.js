@@ -21,7 +21,7 @@ export default function ProductCard({ product, index = 0, surface = "light" }) {
   const cardDark = !!product.cardDark;
 
   return (
-    <Reveal delay={index * 0.08}>
+    <Reveal delay={index * 0.15}>
       <Link href={product.href} className="group block cursor-pointer">
         {/* Placeholder image area */}
         <div

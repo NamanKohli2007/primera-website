@@ -16,7 +16,7 @@ function Star({ className = "h-4 w-4" }) {
 function Stars({ className = "h-4 w-4" }) {
   return (
     <span
-      className="inline-flex items-center gap-0.5 text-[#c2a15a]"
+      className="inline-flex items-center gap-0.5 text-gold"
       aria-label="5 out of 5 stars"
     >
       {[0, 1, 2, 3, 4].map((i) => (
@@ -28,7 +28,7 @@ function Stars({ className = "h-4 w-4" }) {
 
 function VerifiedBadge() {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-charcoal/15 px-2.5 py-0.5 font-sans text-[10px] uppercase tracking-wide2 text-charcoal/55">
+    <span className="inline-flex items-center gap-1.5 rounded-full bg-[#C0DAE7] px-2.5 py-0.5 font-sans text-[10px] uppercase tracking-wide2 text-[#0C1731]">
       <svg
         viewBox="0 0 24 24"
         fill="none"

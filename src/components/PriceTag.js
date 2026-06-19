@@ -39,11 +39,7 @@ export default function PriceTag({
       </span>
       {badge && off > 0 && (
         <span
-          className={`self-center rounded-full border font-sans uppercase tracking-wide2 ${
-            s.badge
-          } ${
-            dark ? "border-cream/25 text-cream/65" : "border-charcoal/20 text-charcoal/55"
-          }`}
+          className={`self-center rounded-full border border-gold/50 font-sans uppercase tracking-wide2 text-gold ${s.badge}`}
         >
           {off}% off
         </span>

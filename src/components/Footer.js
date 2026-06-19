@@ -35,7 +35,7 @@ const COLUMNS = [
     title: "Help",
     links: [
       { label: "FAQ", href: "/faq" },
-      { label: "Shipping", href: "#" },
+      { label: "Shipping Policy", href: "/shipping" },
       { label: "Returns", href: "#" },
       { label: "Size Guide", href: "#" },
     ],
@@ -62,7 +62,7 @@ export default function Footer() {
               />
               PRIMERA
             </Link>
-            <p className="mt-4 max-w-xs font-serif text-lg italic text-charcoal/55">
+            <p className="mt-4 max-w-xs font-serif text-lg italic text-gold">
               Made To Be Missed.
             </p>
           </div>

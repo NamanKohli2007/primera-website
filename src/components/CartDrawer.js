@@ -16,7 +16,8 @@ import ShopCollectionButton from "@/components/ShopCollectionButton";
  * under React Strict Mode in dev (exits hung / animate prop didn't react).
  */
 export default function CartDrawer() {
-  const { items, subtotal, count, isOpen, closeCart } = useCart();
+  const { items, subtotal, count, isOpen, closeCart, couponDiscount } =
+    useCart();
 
   // Lock background scroll while open. Compensate for the disappearing
   // scrollbar with padding so the page doesn't jump when the drawer opens.
@@ -36,9 +37,11 @@ export default function CartDrawer() {
     };
   }, [isOpen]);
 
-  const remaining = Math.max(0, FREE_DELIVERY_THRESHOLD - subtotal);
-  const progress = Math.min(100, (subtotal / FREE_DELIVERY_THRESHOLD) * 100);
-  const qualifies = subtotal >= FREE_DELIVERY_THRESHOLD;
+  // Judge free delivery on the subtotal after any coupon discount.
+  const discounted = Math.max(0, subtotal - couponDiscount);
+  const remaining = Math.max(0, FREE_DELIVERY_THRESHOLD - discounted);
+  const progress = Math.min(100, (discounted / FREE_DELIVERY_THRESHOLD) * 100);
+  const qualifies = discounted >= FREE_DELIVERY_THRESHOLD;
 
   return (
     <div
@@ -116,9 +119,9 @@ export default function CartDrawer() {
                     </>
                   )}
                 </p>
-                <div className="h-1 w-full overflow-hidden rounded-full bg-stone">
+                <div className="h-1 w-full overflow-hidden rounded-full bg-charcoal/15">
                   <div
-                    className="h-full rounded-full bg-charcoal transition-all duration-700 ease-luxe"
+                    className="h-full rounded-full bg-[#C0DAE7] transition-all duration-700 ease-luxe"
                     style={{ width: `${progress}%` }}
                   />
                 </div>

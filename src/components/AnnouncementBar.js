@@ -6,8 +6,8 @@ import { motion } from "framer-motion";
 // Thin promotional bar pinned above the navigation on every page.
 // Alternates between the two messages every few seconds.
 const MESSAGES = [
-  "End of Season Sale — 25% Off Sitewide",
-  "Free Delivery on Orders Above ₹4999",
+  { text: "End of Season Sale — 25% Off Sitewide", gold: true },
+  { text: "Free Delivery on Orders Above ₹4999", gold: false },
 ];
 const INTERVAL = 3000;
 
@@ -30,9 +30,11 @@ export default function AnnouncementBar() {
         initial={{ opacity: 0, y: 9 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className="whitespace-nowrap font-sans text-[10.5px] uppercase tracking-[0.26em] text-cream/80 md:text-[11px]"
+        className={`whitespace-nowrap font-sans text-[10.5px] uppercase tracking-[0.26em] md:text-[11px] ${
+          MESSAGES[index].gold ? "text-gold" : "text-cream/80"
+        }`}
       >
-        {MESSAGES[index]}
+        {MESSAGES[index].text}
       </motion.p>
     </div>
   );

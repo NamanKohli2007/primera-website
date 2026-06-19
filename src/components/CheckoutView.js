@@ -12,6 +12,8 @@ import {
   FAST_DELIVERY,
   COD_FEE,
 } from "@/lib/format";
+import { markFirstOrderUsed, PREPAID_DISCOUNT } from "@/lib/coupons";
+import CouponField from "@/components/CouponField";
 import ShopCollectionButton from "@/components/ShopCollectionButton";
 import PriceTag from "@/components/PriceTag";
 
@@ -127,23 +129,26 @@ function OptionRow({
   );
 }
 
-function Row({ label, value }) {
+function Row({ label, value, valueClassName = "text-charcoal" }) {
   return (
     <div className="flex items-center justify-between font-sans text-sm">
       <span className="text-charcoal/65">{label}</span>
-      <span className="text-charcoal">{value}</span>
+      <span className={valueClassName}>{value}</span>
     </div>
   );
 }
 
 export default function CheckoutView() {
-  const { items, subtotal, hydrated, clearCart } = useCart();
+  const { items, subtotal, hydrated, clearCart, coupon, couponDiscount } =
+    useCart();
   const { user, hydrated: authHydrated, addOrder } = useAuth();
   const [method, setMethod] = useState("standard");
   const [payment, setPayment] = useState("card");
   const [placed, setPlaced] = useState(false);
 
-  const qualifiesFree = subtotal >= FREE_DELIVERY_THRESHOLD;
+  // Free delivery is judged on the subtotal AFTER any coupon discount.
+  const discountedSubtotal = Math.max(0, subtotal - couponDiscount);
+  const qualifiesFree = discountedSubtotal >= FREE_DELIVERY_THRESHOLD;
 
   // Auto-select Free Shipping once the cart qualifies; revert to Standard if
   // the cart drops back below the threshold.
@@ -159,7 +164,13 @@ export default function CheckoutView() {
       ? FAST_DELIVERY
       : STANDARD_DELIVERY;
   const codFee = payment === "cod" ? COD_FEE : 0;
-  const total = subtotal + deliveryCost + codFee;
+  // Paying online (UPI / Card) earns a flat prepaid discount; COD does not.
+  const prepaidDiscount =
+    payment === "upi" || payment === "card" ? PREPAID_DISCOUNT : 0;
+  const total = Math.max(
+    0,
+    subtotal - couponDiscount - prepaidDiscount + deliveryCost + codFee
+  );
 
   const placeOrder = (e) => {
     e.preventDefault();
@@ -174,11 +185,17 @@ export default function CheckoutView() {
           price: i.price,
         })),
         subtotal,
+        couponCode: coupon?.code || null,
+        discount: couponDiscount,
+        prepaidDiscount,
         delivery: deliveryCost,
         codFee,
         total,
       });
     }
+    // Mark the first order as used — device-wide and against the signed-in
+    // account — so a first-order-only code (PRIMERA10) can't be reused.
+    markFirstOrderUsed(user?.email);
     setPlaced(true);
     clearCart();
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -375,6 +392,11 @@ export default function CheckoutView() {
                 title="Cash on Delivery"
                 desc="Pay in cash when your order arrives"
                 price={`+ ${money(COD_FEE)}`}
+                note={
+                  payment === "cod"
+                    ? "Pay online via UPI or Card and save ₹50 on this order"
+                    : null
+                }
               />
             </div>
 
@@ -454,8 +476,30 @@ export default function CheckoutView() {
               ))}
             </div>
 
+            {/* Discount code */}
+            <div className="mt-6 border-t border-stone/70 pt-6">
+              <p className="mb-3 font-sans text-[11px] uppercase tracking-[0.18em] text-charcoal/55">
+                Discount Code
+              </p>
+              <CouponField />
+            </div>
+
             <div className="mt-6 space-y-3 border-t border-stone/70 pt-6">
               <Row label="Subtotal" value={money(subtotal)} />
+              {coupon && couponDiscount > 0 && (
+                <Row
+                  label={`Discount (${coupon.code})`}
+                  value={`− ${money(couponDiscount)}`}
+                  valueClassName="text-green-700"
+                />
+              )}
+              {prepaidDiscount > 0 && (
+                <Row
+                  label="Prepaid Discount"
+                  value={`− ${money(prepaidDiscount)}`}
+                  valueClassName="text-green-700"
+                />
+              )}
               <Row
                 label="Delivery"
                 value={deliveryCost === 0 ? "Free" : money(deliveryCost)}

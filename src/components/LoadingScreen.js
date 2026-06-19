@@ -54,16 +54,22 @@ export default function LoadingScreen() {
       }`}
       style={{ transitionDuration: `${FADE_MS}ms` }}
     >
-      <Image
-        src="/Primera-bgremoved.png"
-        alt="PRIMERA"
-        width={400}
-        height={400}
-        priority
-        className={`h-[260px] w-[260px] transition-all duration-700 ease-luxe md:h-[380px] md:w-[380px] ${
+      <div
+        className={`relative flex items-center justify-center transition-all duration-700 ease-luxe ${
           visible ? "scale-100 opacity-100" : "scale-95 opacity-0"
         }`}
-      />
+      >
+        {/* Thin, elegant gold ring framing the mark */}
+        <span className="pointer-events-none absolute h-[260px] w-[260px] rounded-full border border-gold/40 md:h-[380px] md:w-[380px]" />
+        <Image
+          src="/Primera-bgremoved.png"
+          alt="PRIMERA"
+          width={400}
+          height={400}
+          priority
+          className="h-[260px] w-[260px] md:h-[380px] md:w-[380px]"
+        />
+      </div>
     </div>
   );
 }
